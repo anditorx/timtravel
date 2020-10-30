@@ -20,6 +20,5 @@ Route::get('/checkout/success', 'CheckoutController@success' )->name('checkout-s
 Route::prefix('admin')
     -> namespace('Admin')
     -> group(function () {
-        Route::get('/', 'DashboardController@index')
-            -> name('dashboard');
+        Route::get('/', 'DashboardController@index')-> name('dashboard');
     });
