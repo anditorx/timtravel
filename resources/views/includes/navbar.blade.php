@@ -1,7 +1,7 @@
 <div class="container">
   <nav class="row navbar navbar-expand-lg navbar-light bg-white">
     <a href="{{route('home')}}" class="navbar-brand">
-      <img src="frontend/images/logo-timtravel.png" alt="logo-timtravel">
+      <img src="{{ URL::to('/') }}/frontend/images/logo-timtravel.png" alt="logo-timtravel">
     </a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navb">
       <span class="navbar-toggler-icon"></span>

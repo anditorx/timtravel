@@ -25,49 +25,46 @@
         <div class="row">
           <div class="col-lg-8 pl-lg-0">
             <div class="card card-details">
-              <h1>Masjid Baiturrahman</h1>
-              <p>Aceh, Indonesia</p>
-              <div class="gallery">
-                <div class="xzoom-container">
-                  <img src="frontend/images/baiturrahman-1.png" alt="detials 1" class="xzoom" id="xzoom-default" xoriginal="frontend/images/baiturrahman-1.png">
+              <h1>{{$item->title}}</h1>
+              <p>{{$item->location}}</p>
+              @if ($item->galleries->count())
+                <div class="gallery">
+                  <div class="xzoom-container">
+                    <img src="{{ Storage::url($item->galleries->first()->image )}}" alt="detials 1" class="xzoom" id="xzoom-default" xoriginal="{{ Storage::url($item->galleries->first()->image )}}">
+                  </div>
+                  <div class="xzoom-thumbs">
+                    @foreach ($item->galleries as $gallery)
+                      <a href="{{ Storage::url($gallery->image) }}">
+                        <img src="{{ Storage::url($gallery->image) }}" class="xzoom-gallery" width="128" xpreview="{{ Storage::url($gallery->image) }}">
+                      </a>
+                    @endforeach
+                  </div>
                 </div>
-                <div class="xzoom-thumbs">
-                  <a href="frontend/images/baiturrahman-1.png">
-                    <img src="frontend/images/baiturrahman-1.png" class="xzoom-gallery" width="128" xpreview="frontend/images/baiturrahman-1.png">
-                  </a>
-                  <a href="frontend/images/baiturrahman-2.png">
-                    <img src="frontend/images/baiturrahman-2.png" class="xzoom-gallery" width="128" xpreview="frontend/images/baiturrahman-2.png">
-                  </a>
-                  <a href="frontend/images/baiturrahman-3.png">
-                    <img src="frontend/images/baiturrahman-3.png" class="xzoom-gallery" width="128" xpreview="frontend/images/baiturrahman-3.png">
-                  </a>
-                </div>
-              </div>
+              @endif
               <h2>About</h2>
-              <p>Baiturrahman Grand Mosque is a Mosque located in the center of Banda Aceh city, Aceh Province, Indonesia . The Baiturrahman Grand Mosque is a symbol of religion, culture, spirit, strength, struggle and nationalism of the Acehnese people. </p>
               <p>
-                The mosque is a landmark of Banda Aceh and has survived the 2004 Indian Ocean tsunami.
+                {!! $item->about !!}
               </p>
               <div class="features row">
                 <div class="col-md-4">
-                  <img src="frontend/images//ic_features.png" alt="icon features" class="features-img">
+                  <img src="{{ url('frontend/images//ic_features.png') }}" alt="icon features" class="features-img">
                   <div class="description">
                     <h3>Featured Event</h3>
-                    <p>Takbiran</p>
+                    <p>{{$item->featured_event}}</p>
                   </div>
                 </div>
                 <div class="col-md-4 border-left">
-                  <img src="frontend/images//ic_language.png" alt="icon features" class="features-img">
+                  <img src="{{ url('frontend/images//ic_language.png') }}" alt="icon features" class="features-img">
                   <div class="description">
                     <h3>Language</h3>
-                    <p>Bahasa Indonesia</p>
+                    <p>{{$item->language}}</p>
                   </div>
                 </div>
                 <div class="col-md-4 border-left">
-                  <img src="frontend/images//ic_food.png" alt="icon features" class="features-img">
+                  <img src="{{ url('frontend/images//ic_food.png') }}" alt="icon features" class="features-img">
                   <div class="description">
                     <h3>Foods</h3>
-                    <p>Mie Aceh, Kopi Aceh</p>
+                    <p>{{$item->foods}}</p>
                   </div>
                 </div>
               </div>
@@ -77,33 +74,43 @@
             <div class="card card-details card-right">
               <h2>Members are going</h2>
               <div class="members my-2">
-                <img src="frontend/images/testi1.png" alt="members" class="member-image mr-1">
-                <img src="frontend/images/testi2.png" alt="members" class="member-image mr-1">
-                <img src="frontend/images/testi3.png" alt="members" class="member-image mr-1">
+                <img src="{{ url('frontend/images/testi1.png') }}" alt="members" class="member-image mr-1">
+                <img src="{{ url('frontend/images/testi2.png') }}" alt="members" class="member-image mr-1">
+                <img src="{{ url('frontend/images/testi3.png') }}" alt="members" class="member-image mr-1">
               </div>
               <hr>
               <h2>Trip Information</h2>
               <table class="trip-informations">
                 <tr>
                   <th width="50%">Date of departure</th>
-                  <td width="50%" class="text-right">22 Aug, 2020</td>
+                  <td width="50%" class="text-right">
+                    {{ \Carbon\Carbon::create($item->date_of_departure)->format('n F, Y') }}
+                  </td>
                 </tr>
                 <tr>
                   <th width="50%">Duration</th>
-                  <td width="50%" class="text-right">4D 3N</td>
+                  <td width="50%" class="text-right">{{$item->duration}}</td>
                 </tr>
                 <tr>
                   <th width="50%">Type</th>
-                  <td width="50%" class="text-right">Open Trip</td>
+                  <td width="50%" class="text-right">{{$item->type}}</td>
                 </tr>
                 <tr>
                   <th width="50%">Price</th>
-                  <td width="50%" class="text-right">$80,00/person</td>
+                  <td width="50%" class="text-right">${{$item->price}},00/person</td>
                 </tr>
               </table>
             </div>
             <div class="join-container">
-              <a href="{{url('/checkout')}}" class="btn btn-block btn-join-now mt-3 py-2">Join Now</a>
+              @auth
+                  <form action="{{ route('checkout_process', $item->id) }}" method="POST">
+                    @csrf
+                    <button class="btn btn-block btn-join-now mt-3 py-2" type="submit">Join Now</button>
+                  </form>
+              @endauth
+              @guest
+                <a href="{{ route('login') }}" class="btn btn-block btn-join-now mt-3 py-2">Login or Register to Join</a>
+              @endguest
             </div>
           </div>
         </div>
